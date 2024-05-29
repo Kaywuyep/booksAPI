@@ -14,19 +14,18 @@ const getBooks = async (req, res) => {
 };
 const getBooksById = async (req, res) => {
     try {
-        const id = req.params.id;
-        const books = await Book.findById({ _id: id});
-        console.table("Found book:", books);
-
-        if (!books) {
-            return res.status(400).json({message: "Books not found!"})      
+        const id = req.params.id
+        const bookExist = await Book.findOne({_id: id});
+        if (!bookExist) {
+            return res.status(400).json({ message: "Book does not Exist!!"})
         }
-        res.status(201).json(books)
-
+        const bookId = await Book.findById(id);
+        res.status(200).json(bookId);
     } catch(error) {
-        res.status(401).json("book not found")
+        res.status(500).json({message: error.message});   
     }
 };
+
 const createBooks = async (req, res) => {
     try {
         const book = new Book(req.body);
